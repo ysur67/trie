@@ -50,6 +50,7 @@ void insertInTrie(Node *root, const char *letter)
 {
     if (letter == NULL || *letter == '\0')
     {
+        root->isEnd = true;
         return;
     }
     Node *currentNode = root;
@@ -78,7 +79,11 @@ void printHeaderOfDot(Node *root, ofstream *output)
     {
         auto currentNode = currentRow.second;
         *output << "    " << currentNode->id << " ";
-        *output << "[ label=" << currentNode->value << " ]" << std::endl;
+        *output << "[ label=" << currentNode->value << " ";
+        if (currentNode->isEnd) {
+            *output << ", color=purple, style=filled";
+        }
+        *output << " ]" << std::endl;
         printHeaderOfDot(currentNode, output);
     }
 }
