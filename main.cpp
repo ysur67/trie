@@ -53,6 +53,8 @@ void getNodeTree(Node* root, const char *letter)
         currentNode->id = idCounter;
         idCounter++;
         root->nodes.insert(std::pair<char, Node*>(*letter, currentNode));
+    } else {
+        currentNode = root->nodes.at(*letter);
     }
     return getNodeTree(currentNode, ++letter);
 }
@@ -61,18 +63,11 @@ void printNodeTitles(Node* root, ofstream* output, std::vector<string>* included
     if (root == NULL) {
         return;
     }
-    if(std::find(included->begin(), included->end(), (string)&root->value) == included->end()) {
-        *output << "    " << root->id << " ";
-        *output << "[ label=" << root->value << " ]" << std::endl;
-        included->push_back((string)&root->value);
-    }
-    for (auto currentRow : root->nodes) {
+    for (const auto currentRow : root->nodes) {
         auto currentNode = currentRow.second;
-        if(std::find(included->begin(), included->end(), (string)&currentNode->value) == included->end()) {
-            *output << "    " << currentNode->id << " ";
-            *output << "[ label=" << currentNode->value << " ]" << std::endl;
-            included->push_back((string)&currentNode->value);
-        }
+        *output << "    " << currentNode->id << " ";
+        *output << "[ label=" << currentNode->value << " ]" << std::endl;
+        included->push_back((string)&currentNode->value);
         printNodeTitles(currentNode, output, included);
     }
 }
@@ -106,10 +101,14 @@ int main()
 {
     string word = "asdf";
     string word2 = "basf";
+    string word3 = "avs";
+    string word4 = "avs";
     emptyNode.id = idCounter;
     idCounter++;
     getNodeTree(&emptyNode, word.c_str());
     getNodeTree(&emptyNode, word2.c_str());
+    getNodeTree(&emptyNode, word3.c_str());
+    getNodeTree(&emptyNode, word4.c_str());
     dumpNodeToFile(&emptyNode, "trie.dot");
     return 0;
 }
