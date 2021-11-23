@@ -41,7 +41,7 @@ char* unconstchar(const char* s) {
     }
 }
 
-void getNodeTree(Node* root, const char *letter)
+void insertInTrie(Node* root, const char *letter)
 {
     if (letter == NULL || *letter == '\0') {
         return;
@@ -56,10 +56,10 @@ void getNodeTree(Node* root, const char *letter)
     } else {
         currentNode = root->nodes.at(*letter);
     }
-    return getNodeTree(currentNode, ++letter);
+    return insertInTrie(currentNode, ++letter);
 }
 
-void printNodeTitles(Node* root, ofstream* output, std::vector<string>* included) {
+void printNodeTitles(Node* root, ofstream* output) {
     if (root == NULL) {
         return;
     }
@@ -67,8 +67,7 @@ void printNodeTitles(Node* root, ofstream* output, std::vector<string>* included
         auto currentNode = currentRow.second;
         *output << "    " << currentNode->id << " ";
         *output << "[ label=" << currentNode->value << " ]" << std::endl;
-        included->push_back((string)&currentNode->value);
-        printNodeTitles(currentNode, output, included);
+        printNodeTitles(currentNode, output);
     }
 }
 
@@ -88,10 +87,7 @@ void dumpNodeToFile(Node* node, string filename) {
     ofstream output;
     output.open(filename);
     output << "digraph D {" << std::endl;
-    std::vector<string>* included = new std::vector<string>();
-    included->push_back((string)&node->value);
-    printNodeTitles(node, &output, included);
-    delete included;
+    printNodeTitles(node, &output);
     output << std::endl;
     printNode(node, &output);
     output << "}" << std::endl;
@@ -99,16 +95,16 @@ void dumpNodeToFile(Node* node, string filename) {
 
 int main()
 {
-    string word = "asdf";
-    string word2 = "basf";
-    string word3 = "avs";
-    string word4 = "avs";
+    std::vector<string> treeWords;
+    treeWords.push_back("asdf");
+    treeWords.push_back("basf");
+    treeWords.push_back("avs");
+    treeWords.push_back("cok");
     emptyNode.id = idCounter;
     idCounter++;
-    getNodeTree(&emptyNode, word.c_str());
-    getNodeTree(&emptyNode, word2.c_str());
-    getNodeTree(&emptyNode, word3.c_str());
-    getNodeTree(&emptyNode, word4.c_str());
+    for (auto word : treeWords) {
+        insertInTrie(&emptyNode, word.c_str());
+    }
     dumpNodeToFile(&emptyNode, "trie.dot");
     return 0;
 }
