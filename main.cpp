@@ -107,6 +107,7 @@ void dumpNodeToFile(Node *node, string filename)
     output << std::endl;
     printNode(node, &output);
     output << "}" << std::endl;
+    output.close();
 }
 
 int main()
