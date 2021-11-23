@@ -68,7 +68,7 @@ void insertInTrie(Node *root, const char *letter)
     return insertInTrie(currentNode, ++letter);
 }
 
-void printNodeTitles(Node *root, ofstream *output)
+void printHeaderOfDot(Node *root, ofstream *output)
 {
     if (root == NULL)
     {
@@ -79,7 +79,7 @@ void printNodeTitles(Node *root, ofstream *output)
         auto currentNode = currentRow.second;
         *output << "    " << currentNode->id << " ";
         *output << "[ label=" << currentNode->value << " ]" << std::endl;
-        printNodeTitles(currentNode, output);
+        printHeaderOfDot(currentNode, output);
     }
 }
 
@@ -103,7 +103,7 @@ void dumpNodeToFile(Node *node, string filename)
     ofstream output;
     output.open(filename);
     output << "digraph D {" << std::endl;
-    printNodeTitles(node, &output);
+    printHeaderOfDot(node, &output);
     output << std::endl;
     printNode(node, &output);
     output << "}" << std::endl;
@@ -111,14 +111,16 @@ void dumpNodeToFile(Node *node, string filename)
 
 int main()
 {
-    std::vector<string> treeWords;
-    treeWords.push_back("asdf");
-    treeWords.push_back("basf");
-    treeWords.push_back("avs");
-    treeWords.push_back("cok");
+    string trieWords[30] = {
+        "bad", "easy", "lol", "hurt", "rule", "code", "hate", "coffee", "ice",
+        "fire", "icecream", "hangman", "destroy", "computer", "book",
+        "dictionary", "technology", "power", "thunder", "controller",
+        "dexterity", "keyboard", "thunderous", "lizard", "hazardous",
+        "algorithm", "destruction", "operation", "assignment", "despicable"
+    };
     emptyNode.id = idCounter;
     idCounter++;
-    for (auto word : treeWords)
+    for (auto word : trieWords)
     {
         insertInTrie(&emptyNode, word.c_str());
     }
